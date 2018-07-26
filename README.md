@@ -1,5 +1,5 @@
-# awsLamda_toSplunk
-This is an aws lamda that catches a webhook payload then passes the data to splunk
+# awsLambda_toSplunk
+This is an aws lambda that catches a webhook payload then passes the data to splunk
 
 Has two parameters that are configured in aws, the URL location of the splunk instance plus the port it accepts for the http event collector (8088 by default).  Second item is  the http event collector token.
 
