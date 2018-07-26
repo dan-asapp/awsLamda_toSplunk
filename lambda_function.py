@@ -1,27 +1,17 @@
-import requests
+from botocore.vendored import requests
 import json
 import os
 
-
-def post_to_splunk(payload):
-
+def gen_post_request(payload):
 	token = "Splunk " + os.environ['HTTP_TOKEN']
-	#url = "http://localhost:8088/services/collector"
-	url = os.environ['URL']
-	headers = {'Authorization': token }
-	return requests.post(url=url, data=payload, headers=headers)
+	return requests.post(url=os.environ['URL'], 
+			     data=payload, 
+			     headers={'Authorization': token })
 
-def package_data(payload):
-
-	data = {'event' : payload}
-	response = post_to_splunk(json.dumps(data))
+def package_and_post(payload):
+	response = gen_post_request(json.dumps({'event' : payload}))
 	return response.status_code
 
 def lambda_handler(event, context):
-	
-	alerts = event["alerts"]
-	status = []
-	for alert in alerts:
-		status.append(package_data(alert))
-	
-	return status
+	body = json.loads(event['body'])
+	return [package_and_post(alert) for alert in body['alerts']]
